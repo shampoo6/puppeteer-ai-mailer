@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "tsc && node dist/main.js"
+    "test": "tsc && node dist/main.js",
+    "start": "tsc && node dist/main.js --template=上课日报"
   },
   "keywords": [],
   "author": "",
