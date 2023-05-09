@@ -14,9 +14,15 @@ export async function sendMail() {
   // 提问
   let result = await AIHelper.getInstance().question(question)
   // 获取标题
-  const document = new JSDOM(result.html).window.document
+  let document = new JSDOM(result.html).window.document
   // container 必须存在否则就重试
-  const container = document.querySelector('.container')
+  let container = document.querySelector('.container')
+
+  if (!container) {
+    document = new JSDOM(result.content).window.document
+    container = document.querySelector('.container')
+  }
+
   if (!container) {
     await sendMail()
     return

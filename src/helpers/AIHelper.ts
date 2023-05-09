@@ -1,7 +1,6 @@
 import {
   AIChatMessage,
   AIChatStatus,
-  EventHandler,
   EventName,
   WorkerMessage,
   WorkerMessageType,
@@ -11,28 +10,29 @@ import {
 export class AIHelper {
   private static ins: AIHelper
   private wp: WorkerProxy
-  private readonly readyHandler: EventHandler
 
-  private constructor(readyHandler: EventHandler) {
-    this.readyHandler = readyHandler
+  private constructor() {
     this.wp = new WorkerProxy()
-    this.wp.on(EventName.Ready, this.readyHandler)
     AIHelper.ins = this
   }
 
-  public static getInstance(readyHandler?: EventHandler): AIHelper {
-    return AIHelper.ins || new AIHelper(readyHandler)
+  public static getInstance(): AIHelper {
+    return AIHelper.ins || new AIHelper()
   }
 
   public async question(text: string): Promise<AIChatMessage> {
-    await this.wp.question(text)
+    await this.wp.chat(text)
     return await this.bindEvent()
+  }
+
+  public async waitForWorkerReady() {
+    await this.wp.waitForWorkerReady()
   }
 
   private bindEvent(): Promise<AIChatMessage> {
     return new Promise(r => {
       this.wp.on(EventName.Message, (e: WorkerMessage) => {
-        if (e.type === WorkerMessageType.Answer) {
+        if (e.type === WorkerMessageType.Reply) {
           const data: AIChatMessage = e.data
           if (data.status === AIChatStatus.End) {
             this.wp.off(EventName.Message)

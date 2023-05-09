@@ -1,5 +1,5 @@
 module.exports = {
-    aiType: 'ChatCutterman',
+    aiType: 'FastChat',
     chromePath: 'path/to/chrome.exe',
     email: 'xxxxx',
     password: 'xxxxx',
